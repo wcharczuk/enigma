@@ -41,17 +41,17 @@ namespace Enigma
 
 		public static Rotor Rotor_VI()
 		{
-			return new Rotor("JPGVOUMFYQBENHZRDKASXLICTW", rotateAt: 'Z');
+			return new Rotor("JPGVOUMFYQBENHZRDKASXLICTW", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Rotor Rotor_VII()
 		{
-			return new Rotor("NZJHGRCXMYSWBOUFAIVLPEKQDT", rotateAt: 'Z');
+			return new Rotor("NZJHGRCXMYSWBOUFAIVLPEKQDT", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Rotor Rotor_VIII()
 		{
-			return new Rotor("FKQHTLXOCBJSPDZRAMEWNIUYGV", rotateAt: 'Z');
+			return new Rotor("FKQHTLXOCBJSPDZRAMEWNIUYGV", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Reflector Reflector_A()

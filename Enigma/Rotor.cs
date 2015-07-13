@@ -32,6 +32,15 @@ namespace Enigma
 			this.OffsetPosition = 'A';
 		}
 
+		public Rotor(IEnumerable<Char> wires, Char rotateAt, Char rotateAtSecondary)
+		{
+			_initWires(wires);
+			this.RotateAt = rotateAt;
+			this.RotateAtSecondary = rotateAtSecondary;
+			this.InitialPosition = 'A';
+			this.OffsetPosition = 'A';
+		}
+
 		private void _initWires(IEnumerable<Char> wires)
 		{
 			this.WiresLeft = new WireMatrix(wires);
@@ -46,6 +55,7 @@ namespace Enigma
 		public Char OffsetPosition { get; set; }
 
 		public Char RotateAt { get; private set; }
+		public Char? RotateAtSecondary { get; private set; }
 
 		public void RotateToPosition(Char position)
 		{
@@ -65,6 +75,10 @@ namespace Enigma
 		public bool Rotate()
 		{
 			var shouldAdvance = this.OffsetPosition.Equals(this.RotateAt);
+			if (this.RotateAtSecondary != null)
+			{
+				shouldAdvance = shouldAdvance || this.OffsetPosition.Equals(this.RotateAtSecondary.Value);
+			}
 
 			var offsetIndex = WireMatrix.ProjectCharacter(this.OffsetPosition);
 			offsetIndex = offsetIndex + 1;
