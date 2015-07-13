@@ -8,32 +8,36 @@ namespace Enigma
 {
 	public class Rotor
 	{
-		public Rotor()
+		public Rotor(String id)
 		{
+			this.Id = id;
 			_initWires(WireMatrix.RandomWires());
 			this.RotateAt = 'A';
 			this.InitialPosition = 'A';
 			this.OffsetPosition = 'A';
 		}
 
-		public Rotor(IEnumerable<Char> wires)
+		public Rotor(String id, IEnumerable<Char> wires)
 		{
+			this.Id = id;
 			_initWires(wires);
 			this.RotateAt = 'A';
 			this.InitialPosition = 'A';
 			this.OffsetPosition = 'A';
 		}
 
-		public Rotor(IEnumerable<Char> wires, Char rotateAt)
+		public Rotor(String id, IEnumerable<Char> wires, Char rotateAt)
 		{
+			this.Id = id;
 			_initWires(wires);
 			this.RotateAt = rotateAt;
 			this.InitialPosition = 'A';
 			this.OffsetPosition = 'A';
 		}
 
-		public Rotor(IEnumerable<Char> wires, Char rotateAt, Char rotateAtSecondary)
+		public Rotor(String id, IEnumerable<Char> wires, Char rotateAt, Char rotateAtSecondary)
 		{
+			this.Id = id;
 			_initWires(wires);
 			this.RotateAt = rotateAt;
 			this.RotateAtSecondary = rotateAtSecondary;
@@ -46,6 +50,8 @@ namespace Enigma
 			this.WiresLeft = new WireMatrix(wires);
 			this.WiresRight = this.WiresLeft.Invert();
 		}
+
+		public String Id { get; private set; }
 
 		public WireMatrix WiresLeft { get; private set; }
 		public WireMatrix WiresRight { get; private set; }
@@ -104,6 +110,11 @@ namespace Enigma
 		{
 			var output = this.WiresRight.Process(input);			
 			return output;
+		}
+
+		public override string ToString()
+		{
+			return String.Format("R({0}){1}", this.Id, this.OffsetPosition);
 		}
 	}
 }

@@ -16,57 +16,57 @@ namespace Enigma
     {
 		public static Rotor Rotor_I()
 		{
-			return new Rotor("EKMFLGDQVZNTOWYHXUSPAIBRCJ", rotateAt: 'Q');
+			return new Rotor("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", rotateAt: 'Q');
 		}
 
 		public static Rotor Rotor_II()
 		{
-			return new Rotor("AJDKSIRUXBLHWTMCQGZNPYFVOE", rotateAt: 'E');
+			return new Rotor("II", "AJDKSIRUXBLHWTMCQGZNPYFVOE", rotateAt: 'E');
 		}
 
 		public static Rotor Rotor_III()
 		{
-			return new Rotor("BDFHJLCPRTXVZNYEIWGAKMUSQO", rotateAt: 'V');
+			return new Rotor("III", "BDFHJLCPRTXVZNYEIWGAKMUSQO", rotateAt: 'V');
 		}
 
 		public static Rotor Rotor_IV()
 		{
-			return new Rotor("ESOVPZJAYQUIRHXLNFTGKDCMWB", rotateAt: 'J');
+			return new Rotor("IV", "ESOVPZJAYQUIRHXLNFTGKDCMWB", rotateAt: 'J');
 		}
 
 		public static Rotor Rotor_V()
 		{
-			return new Rotor("VZBRGITYUPSDNHLXAWMJQOFECK", rotateAt: 'Z');
+			return new Rotor("V", "VZBRGITYUPSDNHLXAWMJQOFECK", rotateAt: 'Z');
 		}
 
 		public static Rotor Rotor_VI()
 		{
-			return new Rotor("JPGVOUMFYQBENHZRDKASXLICTW", rotateAt: 'Z', rotateAtSecondary: 'M');
+			return new Rotor("VI", "JPGVOUMFYQBENHZRDKASXLICTW", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Rotor Rotor_VII()
 		{
-			return new Rotor("NZJHGRCXMYSWBOUFAIVLPEKQDT", rotateAt: 'Z', rotateAtSecondary: 'M');
+			return new Rotor("VII", "NZJHGRCXMYSWBOUFAIVLPEKQDT", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Rotor Rotor_VIII()
 		{
-			return new Rotor("FKQHTLXOCBJSPDZRAMEWNIUYGV", rotateAt: 'Z', rotateAtSecondary: 'M');
+			return new Rotor("VIII", "FKQHTLXOCBJSPDZRAMEWNIUYGV", rotateAt: 'Z', rotateAtSecondary: 'M');
 		}
 
 		public static Reflector Reflector_A()
 		{
-			return new Reflector("EJMZALYXVBWFCRQUONTSPIKHGD");
+			return new Reflector("A", "EJMZALYXVBWFCRQUONTSPIKHGD");
 		}
 
 		public static Reflector Reflector_B()
 		{
-			return new Reflector("YRUHQSLDPXNGOKMIEBFZCWVJAT");
+			return new Reflector("B", "YRUHQSLDPXNGOKMIEBFZCWVJAT");
 		}
 
 		public static Reflector Reflector_C()
 		{
-			return new Reflector("FVPJIAOYEDRZXWGCTKUQSBNMHL");
+			return new Reflector("C", "FVPJIAOYEDRZXWGCTKUQSBNMHL");
 		}
 
 		public Enigma()
@@ -94,6 +94,14 @@ namespace Enigma
 			if (Rotor_3 == null)
 			{
 				throw new EnigmaException("Rotor 3 not installed!");
+			}
+
+			this.Rotor_1.OffsetPosition = this.Rotor_1.InitialPosition;
+			this.Rotor_2.OffsetPosition = this.Rotor_2.InitialPosition;
+			this.Rotor_3.OffsetPosition = this.Rotor_3.InitialPosition;
+			if (this.Rotor_4 != null)
+			{
+				this.Rotor_4.OffsetPosition = this.Rotor_4.InitialPosition;
 			}
 		}
 
@@ -192,9 +200,9 @@ namespace Enigma
 		{
 			if (Rotor_4 != null)
 			{
-				return "R1:{0},{1} R2:{2},{3} R3:{4},{5} R4:{6},{7} Plugs: {8}".Format(Rotor_1.InitialPosition, Rotor_1.OffsetPosition, Rotor_2.InitialPosition, Rotor_2.OffsetPosition, Rotor_3.InitialPosition, Rotor_3.OffsetPosition, Rotor_4.InitialPosition, Rotor_4.OffsetPosition, PlugBoard.ToString());
+				return String.Format("{0} {1} {2} {3} {4} Plugs: {5}", Reflector.ToString(), Rotor_1.ToString(), Rotor_2.ToString(), Rotor_3.ToString(), Rotor_4.ToString(), PlugBoard.ToString());
 			}
-			return "R1:{0},{1} R2:{2},{3} R3:{4},{5} Plugs: {6}".Format(Rotor_1.InitialPosition, Rotor_1.OffsetPosition, Rotor_2.InitialPosition, Rotor_2.OffsetPosition, Rotor_3.InitialPosition, Rotor_3.OffsetPosition, PlugBoard.ToString());
+			return String.Format("{0} {1} {2} {3} Plugs: {4}", Reflector.ToString(), Rotor_1.ToString(), Rotor_2.ToString(), Rotor_3.ToString(), PlugBoard.ToString());
 		}
 	}
 }
