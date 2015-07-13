@@ -1,0 +1,22 @@
+[Pp]recompile/
+[Pp]recompile_build/
+[Oo]bj/
+[Bb]in/
+[Dd]ebug*/
+[Rr]elease*/
+[Dd]eploy/
+*.mdf
+*.ldf
+*.user
+*.suo
+*.log
+*.vsp
+*.vsmdi
+*.psess
+_Resharper.*
+*.resharper
+[Tt]humbs.db
+Precompile/*
+
+# mac os x index files
+*.DS_Store
