@@ -31,7 +31,7 @@ namespace Enigma
 
 		public override string ToString()
 		{
-			return String.Format("Ref {0}", this.Id);
+			return String.Format("Reflector {0}", this.Id);
 		}
 	}
 }

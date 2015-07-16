@@ -86,7 +86,14 @@ namespace Enigma
 
 		public override string ToString()
 		{
-			return String.Join(", ", this.Plugs.Select(_ => "{0}-{1}".Format(_.Key, _.Value)));
+			if(!this.Plugs.Any())
+			{
+				return "None";
+			}
+			else
+			{
+				return String.Join(", ", this.Plugs.Select(_ => "{0}-{1}".Format(_.Key, _.Value)));
+			}
 		}
 	}
 }

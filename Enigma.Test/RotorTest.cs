@@ -22,6 +22,15 @@ namespace Enigma.Test
 		{
 			var rotor = Enigma.Rotor_I();
 			rotor.Rotate();
+			Assert.Equal('B', rotor.OffsetPosition);
+		}
+
+		[Fact]
+		public void Rotor_RotateToPosition()
+		{
+			var rotor = Enigma.Rotor_I();
+			rotor.RotateToPosition('F');
+			Assert.Equal('F', rotor.OffsetPosition);
 		}
 
 		[Fact]

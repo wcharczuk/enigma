@@ -71,10 +71,25 @@ namespace Enigma
 			}
 
 			var positionIndex = WireMatrix.ProjectCharacter(position);
-			for(int currentIndex = 0; currentIndex < positionIndex; currentIndex++)
+			var offsetIndex = WireMatrix.ProjectCharacter(this.OffsetPosition);
+			var delta = positionIndex - offsetIndex;
+			if (delta < 0)
+			{
+				delta = 26 + delta;
+			}
+
+			for(int currentIndex = 0; currentIndex < delta; currentIndex++)
 			{
 				this.WiresLeft.Rotate();
 				this.WiresRight = this.WiresLeft.Invert();
+
+				offsetIndex = offsetIndex + 1;
+				if (offsetIndex >= 26)
+				{
+					offsetIndex = 0;
+				}
+
+				this.OffsetPosition = WireMatrix.ProjectIndex(offsetIndex);
 			}
 		}
 
@@ -114,7 +129,7 @@ namespace Enigma
 
 		public override string ToString()
 		{
-			return String.Format("R({0}){1}", this.Id, this.OffsetPosition);
+			return String.Format("Rotor Id: {0} Initial: {1} Offset: {2}", this.Id, this.InitialPosition, this.OffsetPosition);
 		}
 	}
 }

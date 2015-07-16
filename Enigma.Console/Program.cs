@@ -8,7 +8,7 @@ namespace Enigma.Console
 {
 	class Program
 	{
-		static Enigma Create()
+		static Enigma CreateSampleEnigma()
 		{
 			var enigma = new Enigma();
 			enigma.Reflector = Enigma.Reflector_A();
@@ -20,16 +20,17 @@ namespace Enigma.Console
 			enigma.Rotor_2.InitialPosition = 'T';
 			enigma.Rotor_3.InitialPosition = 'W';
 
-			enigma.PlugBoard.AddPlug('f', 'q');
-			enigma.PlugBoard.AddPlug('t', 's');
-			enigma.PlugBoard.AddPlug('a', 'z');
-			enigma.PlugBoard.AddPlug('g', 'j');
-			enigma.PlugBoard.AddPlug('m', 'n');
-			enigma.PlugBoard.AddPlug('b', 'o');
+			//enigma.PlugBoard.AddPlug('f', 'q');
+			//enigma.PlugBoard.AddPlug('t', 's');
+			//enigma.PlugBoard.AddPlug('a', 'z');
+			//enigma.PlugBoard.AddPlug('g', 'j');
+			//enigma.PlugBoard.AddPlug('m', 'n');
+			//enigma.PlugBoard.AddPlug('b', 'o');
 
-			enigma.InitializationCheck();
+			enigma.Initialize();
 			return enigma;
 		}
+
 		static void Main(string[] args)
 		{
 			Break();
@@ -37,8 +38,8 @@ namespace Enigma.Console
 
 		static void Test()
 		{
-			var enigma_a = Create();
-			var enigma_b = Create();
+			var enigma_a = CreateSampleEnigma();
+			var enigma_b = CreateSampleEnigma();
 
 			System.Console.WriteLine("Machine A:");
 			var output_a = enigma_a.Input('A');
@@ -55,7 +56,7 @@ namespace Enigma.Console
 
 		static void Run()
 		{
-			var enigma = Create();
+			var enigma = CreateSampleEnigma();
 
 			var row = 0;
 			while (true)
@@ -76,14 +77,60 @@ namespace Enigma.Console
 
 		static void Break()
 		{
-			var plain_text = "TISBUTATEST";
-			var cipher_text = "JCYCTXLUNBM";
+			var plainText = "TISBUTATEST";
 
-			var presets = _spanRotorPresets().ToArray();
-            foreach (var machine in presets)
+			var sampleEnigma = CreateSampleEnigma();
+
+			var cipherTextList = new List<Char>();
+			foreach(var c in plainText)
 			{
-				System.Console.WriteLine(machine.ToString());
+				cipherTextList.Add(sampleEnigma.Input(c));
 			}
+
+			var cipherText = new String(cipherTextList.ToArray());
+
+			bool solved = false;
+			Enigma solution = null;
+			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+			int processed = 0;
+			var presets = _spanRotorPresets().ToArray();
+
+			var consoleUpdater = System.Threading.Tasks.Task.Run(() =>
+			{
+				while (!solved)
+				{
+					System.Console.SetCursorPosition(0, 0);
+					System.Console.WriteLine("Presets Tried: {0}".Format(processed));
+					System.Threading.Thread.Sleep(500);
+				}
+
+				if (solution != null)
+				{
+					System.Console.WriteLine(String.Format("Found Solution In: {0} ms", stopWatch.ElapsedMilliseconds));
+					System.Console.WriteLine(String.Format("Solution: {0}", solution.ToString()));
+				}
+			});
+
+			System.Threading.Tasks.Parallel.ForEach(presets, new ParallelOptions() { MaxDegreeOfParallelism = 16 }, (preset) =>
+			{
+				foreach(var rotorPosition in _rotorStartingPositions())
+				{
+					if (solved) { return; }
+
+					preset.Rotor_1.InitialPosition = rotorPosition.Item1;
+					preset.Rotor_2.InitialPosition = rotorPosition.Item2;
+					preset.Rotor_3.InitialPosition = rotorPosition.Item3;
+					preset.Initialize();
+
+					if (_check(preset, cipherText, plainText))
+					{
+						stopWatch.Stop();
+						solved = true;
+						solution = preset;
+					}
+					System.Threading.Interlocked.Increment(ref processed);
+				}
+			});
 
 			System.Console.ReadKey();
         }
@@ -161,13 +208,13 @@ namespace Enigma.Console
 			enigma.Rotor_2 = rotor2;
 			enigma.Rotor_3 = rotor3;
 			enigma.Reflector = reflector;
-			enigma.InitializationCheck();
 			return enigma;
 		}
 
 		static bool _check(Enigma machine, String cipherText, String expectedPlaintext)
 		{
-			int index = 0;
+            int index = 0;
+			var plainText = "";
 			foreach(var letter in cipherText)
 			{
 				var output = machine.Input(letter);
@@ -175,9 +222,22 @@ namespace Enigma.Console
 				{
 					return false;
 				}
+				plainText = plainText + output;
 				index = index + 1;
 			}
 			return true;
+		}
+
+		static bool _isCorrect(Enigma machine)
+		{
+			if (machine.Rotor_1.Id == "III" && machine.Rotor_2.Id == "I" && machine.Rotor_3.Id == "V")
+			{
+				if (machine.Rotor_1.InitialPosition == 'F' && machine.Rotor_2.InitialPosition == 'T' && machine.Rotor_3.InitialPosition == 'W')
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

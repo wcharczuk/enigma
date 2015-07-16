@@ -74,7 +74,7 @@ namespace Enigma
 			this.PlugBoard = new PlugBoard();
 		}
 
-		public void InitializationCheck()
+		public void Initialize()
 		{
 			if (Reflector == null)
 			{
@@ -96,12 +96,12 @@ namespace Enigma
 				throw new EnigmaException("Rotor 3 not installed!");
 			}
 
-			this.Rotor_1.OffsetPosition = this.Rotor_1.InitialPosition;
-			this.Rotor_2.OffsetPosition = this.Rotor_2.InitialPosition;
-			this.Rotor_3.OffsetPosition = this.Rotor_3.InitialPosition;
+			this.Rotor_1.RotateToPosition(this.Rotor_1.InitialPosition);
+			this.Rotor_2.RotateToPosition(this.Rotor_2.InitialPosition);
+			this.Rotor_3.RotateToPosition(this.Rotor_3.InitialPosition);
 			if (this.Rotor_4 != null)
 			{
-				this.Rotor_4.OffsetPosition = this.Rotor_4.InitialPosition;
+				this.Rotor_4.RotateToPosition(this.Rotor_4.InitialPosition);
 			}
 		}
 
