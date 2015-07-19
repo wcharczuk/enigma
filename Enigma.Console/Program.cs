@@ -20,12 +20,12 @@ namespace Enigma.Console
 			enigma.Rotor_2.InitialPosition = 'T';
 			enigma.Rotor_3.InitialPosition = 'W';
 
-			//enigma.PlugBoard.AddPlug('f', 'q');
-			//enigma.PlugBoard.AddPlug('t', 's');
-			//enigma.PlugBoard.AddPlug('a', 'z');
-			//enigma.PlugBoard.AddPlug('g', 'j');
-			//enigma.PlugBoard.AddPlug('m', 'n');
-			//enigma.PlugBoard.AddPlug('b', 'o');
+			enigma.PlugBoard.AddPlug('f', 'q');
+			enigma.PlugBoard.AddPlug('t', 's');
+			enigma.PlugBoard.AddPlug('a', 'z');
+			enigma.PlugBoard.AddPlug('g', 'j');
+			enigma.PlugBoard.AddPlug('m', 'n');
+			enigma.PlugBoard.AddPlug('b', 'o');
 
 			enigma.Initialize();
 			return enigma;
@@ -80,7 +80,7 @@ namespace Enigma.Console
 			var plainText = "TISBUTATEST";
 
 			var sampleEnigma = CreateSampleEnigma();
-
+			
 			var cipherTextList = new List<Char>();
 			foreach(var c in plainText)
 			{
@@ -93,14 +93,24 @@ namespace Enigma.Console
 			Enigma solution = null;
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
 			int processed = 0;
+			int lastProcessed = 0;
+			long lastElapsed = 0;
 			var presets = _spanRotorPresets().ToArray();
 
 			var consoleUpdater = System.Threading.Tasks.Task.Run(() =>
 			{
 				while (!solved)
 				{
+					var processedDifference = processed - lastProcessed;
+					var currentElapsed = stopWatch.ElapsedMilliseconds;
+					var timeDelta = currentElapsed - lastElapsed;
+					var rate = ((double)processedDifference / (double)timeDelta) * 1000.0;
+					
 					System.Console.SetCursorPosition(0, 0);
-					System.Console.WriteLine("Presets Tried: {0}".Format(processed));
+					System.Console.WriteLine("Presets Checked: {0} @ {1:#0.00} checks/sec".Format(processed, rate));
+
+					lastElapsed = currentElapsed;
+					lastProcessed = processed;
 					System.Threading.Thread.Sleep(500);
 				}
 
@@ -111,7 +121,7 @@ namespace Enigma.Console
 				}
 			});
 
-			System.Threading.Tasks.Parallel.ForEach(presets, new ParallelOptions() { MaxDegreeOfParallelism = 16 }, (preset) =>
+			System.Threading.Tasks.Parallel.ForEach(presets, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, (preset) =>
 			{
 				foreach(var rotorPosition in _rotorStartingPositions())
 				{
@@ -227,8 +237,22 @@ namespace Enigma.Console
 			}
 			return true;
 		}
+		
+		static IEnumerable<Tuple<Char, Char>> _generateLetterPairs()
+		{
+			foreach(var a in WireMatrix.ALPHABET)
+			{
+				foreach (var b in WireMatrix.ALPHABET)
+				{
+					if (!a.Equals(b))
+					{
+						yield return Tuple.Create(a, b);
+					}
+				}
+			}
+		}
 
-		static bool _isCorrect(Enigma machine)
+		static bool _shouldBeCorrect(Enigma machine)
 		{
 			if (machine.Rotor_1.Id == "III" && machine.Rotor_2.Id == "I" && machine.Rotor_3.Id == "V")
 			{
