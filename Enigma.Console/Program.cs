@@ -64,6 +64,7 @@ namespace Enigma.Console
 				var input = System.Console.ReadKey(intercept: true).KeyChar;
 				if (Char.IsLetter(input))
 				{
+					System.Console.Clear();
 					var left = System.Console.CursorLeft;
 					var top = System.Console.CursorTop;
 					System.Console.Write("{0}".Format(Char.ToUpper(input)));
@@ -105,7 +106,8 @@ namespace Enigma.Console
 					var currentElapsed = stopWatch.ElapsedMilliseconds;
 					var timeDelta = currentElapsed - lastElapsed;
 					var rate = ((double)processedDifference / (double)timeDelta) * 1000.0;
-					
+				
+					System.Console.Clear();	
 					System.Console.SetCursorPosition(0, 0);
 					System.Console.WriteLine("Presets Checked: {0} @ {1:#0.00} checks/sec".Format(processed, rate));
 
@@ -116,6 +118,7 @@ namespace Enigma.Console
 
 				if (solution != null)
 				{
+					System.Console.Clear();
 					System.Console.WriteLine(String.Format("Found Solution In: {0} ms", stopWatch.ElapsedMilliseconds));
 					System.Console.WriteLine(String.Format("Solution: {0}", solution.ToString()));
 				}
